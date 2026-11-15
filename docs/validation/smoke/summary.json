@@ -1,0 +1,14 @@
+{
+  "mode": "alsf",
+  "seed": 42,
+  "generations": 8,
+  "pymoo_evaluations": 192,
+  "unique_archive_points": 192,
+  "pareto_size": 24,
+  "total_n_repair_calls": 14,
+  "total_n_offspring_seen": 206,
+  "total_n_forbidden_candidates": 0,
+  "total_n_regenerated": 0,
+  "total_n_attempts": 0,
+  "final_exclusion_centers": 0
+}

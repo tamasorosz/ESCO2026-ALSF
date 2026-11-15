@@ -18,20 +18,23 @@ def test_no_robust_medoid_from_mixed_dbscan_component():
     data = dataframe([[0,0],[0.08,0],[0.16,0],[0.24,0]],
                      [[1,1],[1,1],[1.02,1],[1.5,1]])
     out, stats = classify_dataframe(data,[.1,.1],.1,.1,
-                                    min_samples=2,floors=(.01,.01))
+                                    min_samples=2, dbscan_min_samples=2,floors=(.01,.01))
     assert stats['n_clusters'] == 1
-    assert stats['n_non_robust_clusters'] == 1
+    assert stats['n_non_robust_clusters'] == 0
+    assert stats['n_mixed_clusters'] == 1
+    assert out.cluster_status.eq('mixed').all()
     assert stats['n_robust_clusters'] == 0
     assert (out.flag == 'robust').sum() == 2  # locally stable samples exist
     assert not out.is_medoid.any()  # but the component is not robust!
-    assert len(representative_indices(out)) == 0
+    assert len(representative_indices(out)) == 1
+    assert out.iloc[representative_indices(out)].flag.eq("robust").all()
 
 
 def test_wholly_robust_dbscan_component_has_one_medoid():
     data = dataframe([[0,0],[0.08,0],[1,1]],
                      [[1,1],[1.02,1.02],[2,2]])
     out, stats = classify_dataframe(data,[.1,.1],.1,.1,
-                                    min_samples=2,floors=(.01,.01))
+                                    min_samples=2, dbscan_min_samples=2,floors=(.01,.01))
     assert stats['n_robust_clusters'] == 1
     assert int(out.is_medoid.sum()) == 1
     assert len(representative_indices(out)) == 1

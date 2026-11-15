@@ -13,6 +13,8 @@ class VerifiedViolationFilter:
     def __init__(self, tolerances, radius=1.0):
         self.tolerances = tolerances
         self.radius = float(radius)
+        if not np.isfinite(self.radius) or self.radius <= 0:
+            raise ValueError("exclusion radius must be finite and positive")
         self._tree = None
         self.count = 0
 

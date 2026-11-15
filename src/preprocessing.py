@@ -25,6 +25,9 @@ class OffspringRepair(Repair):
         self.policy = VerifiedViolationFilter(tolerances, radius=d_repair)
         self.n_regenerated = 0
         self.n_attempts = 0
+        self.n_repair_calls = 0
+        self.n_offspring_seen = 0
+        self.n_forbidden_candidates = 0
 
     def update_flags(self, archive_df):
         coords = archive_df[decision_columns(archive_df)].to_numpy(dtype=float)
@@ -38,9 +41,12 @@ class OffspringRepair(Repair):
     def _do(self, problem, X, **kwargs):
         data = np.clip(np.round(np.asarray(X, dtype=float).copy(),
                                 self.decimal_places), problem.xl, problem.xu)
+        self.n_repair_calls += 1
+        self.n_offspring_seen += len(data)
         for i in range(len(data)):
             if not self._forbidden(data[i]):
                 continue
+            self.n_forbidden_candidates += 1
             for _ in range(self.max_resample_attempts):
                 self.n_attempts += 1
                 candidate = np.round(self.rng.uniform(problem.xl, problem.xu),
@@ -55,8 +61,15 @@ class OffspringRepair(Repair):
                                    'review tolerance size, thresholds and search bounds.')
         return data
 
-    def pop_counters(self):
-        result = self.n_regenerated, self.n_attempts
-        self.n_regenerated = 0
-        self.n_attempts = 0
+    def pop_diagnostics(self):
+        names = ('n_repair_calls', 'n_offspring_seen', 'n_forbidden_candidates',
+                 'n_regenerated', 'n_attempts')
+        result = {name: getattr(self, name) for name in names}
+        result['n_exclusion_centers'] = self.policy.count
+        for name in names:
+            setattr(self, name, 0)
         return result
+
+    def pop_counters(self):
+        info = self.pop_diagnostics()
+        return info['n_regenerated'], info['n_attempts']
