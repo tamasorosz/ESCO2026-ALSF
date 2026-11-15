@@ -149,79 +149,124 @@ class DiBarbaSolenoid:
         j = self.current_density(x)
         return np.concatenate((j, j[::-1]))
 
-    def reference_pareto(self, n_weights: int = 101) -> pd.DataFrame:
-        """High-quality Pareto reference by CONVEX bounded least squares.
+    def hessians(self):
+        """Constant positive-semidefinite Hessians of the defined objectives."""
+        return np.stack([2*self.K.T@self.K/self.s.n_field_samples,
+                         2*np.eye(self.n_var)/self.n_var])
 
-        Minimize f1 + lambda*f2 where lambda>=0. Both objectives are convex
-        quadratic. Weighted solutions are globally optimal for each lambda.
-        If published objective norms differ, this reference is valid only
-        for this explicitly defined benchmark version.
+    def _weighted_solution(self, lam):
+        n = self.s.n_field_samples
+        A = np.vstack([self.K/np.sqrt(n), np.sqrt(lam/self.n_var)*np.eye(self.n_var)])
+        b = np.r_[self.b_target/np.sqrt(n), np.zeros(self.n_var)]
+        res = lsq_linear(A, b, bounds=(self.lower,self.upper), tol=1e-12, max_iter=1000)
+        if not res.success or not np.isfinite(res.x).all():
+            raise RuntimeError(f'Reference solve failed: lambda={lam}: {res.message}')
+        x = res.x
+        g = self.gradient(x)[0]+lam*self.gradient(x)[1]
+        # Projected gradient mapping is zero exactly at box-constrained KKT points.
+        kkt = np.max(abs(x-np.clip(x-g,self.lower,self.upper)))
+        return dict(zip([f'X{i+1}' for i in range(self.n_var)],x),
+                    Obj1=self.evaluate(x)[0],Obj2=self.evaluate(x)[1],
+                    **{'lambda':float(lam)},solver_success=bool(res.success),
+                    solver_status=int(res.status),solver_iterations=int(res.nit),
+                    solver_optimality=float(res.optimality),kkt_residual=float(kkt),
+                    bound_violation=float(max(np.max(self.lower-x),np.max(x-self.upper),0)))
+
+    def reference_pareto(self, n_weights=241, *, adaptive_gap=None, max_points=1200):
+        """Convex bounded weighted least squares, with optional objective-gap refinement.
+
+        All scalarizations are globally solved to numerical tolerance. Deduplication
+        and strict nondominance filtering apply only to the returned plotting front;
+        every solve is retained in self.reference_diagnostics. Gap distances use
+        objective ranges of the initial solved front, fixed throughout refinement.
         """
-        lambdas = np.r_[0.0, np.logspace(-8, 7, n_weights)]
-        n_obs = self.s.n_field_samples
-        K_aug_top = self.K / np.sqrt(n_obs)
-        target_top = np.ones(n_obs) / np.sqrt(n_obs)
-        eye = np.eye(self.n_var)
-        records = []
-        for lam in lambdas:
-            A_aug = np.vstack([K_aug_top, np.sqrt(lam / self.n_var) * eye])
-            b_aug = np.r_[target_top, np.zeros(self.n_var)]
-            res = lsq_linear(A_aug, b_aug,
-                             bounds=(self.lower, self.upper),
-                             tol=1e-11, max_iter=500)
-            if not res.success:
-                raise RuntimeError(f"Reference solver failed at lambda={lam}: {res.message}")
-            x = res.x
-            f1, f2 = self.evaluate(x)
-            records.append([*x, f1, f2, lam])
+        if n_weights < 2 or (adaptive_gap is not None and adaptive_gap <= 0):
+            raise ValueError('Need at least two weights and a positive adaptive gap')
+        records = [self._weighted_solution(lam) for lam in np.r_[0.,np.logspace(-8,7,n_weights)]]
+        zero = dict(zip([f'X{i+1}' for i in range(self.n_var)], np.zeros(self.n_var)),
+                    Obj1=1., Obj2=0., **{'lambda':np.inf}, solver_success=True,
+                    solver_status=3,solver_iterations=0,solver_optimality=0.,
+                    kkt_residual=0.,bound_violation=0.)
+        records.append(zero)
+        scale = np.maximum(np.ptp(np.array([[r['Obj1'],r['Obj2']] for r in records]),axis=0),1e-12)
+        def clean(rows):
+            df = pd.DataFrame(rows).sort_values(['Obj1','Obj2']).reset_index(drop=True)
+            keep=[]; best=np.inf
+            for i,r in df.iterrows():
+                if r.Obj2 < best:
+                    keep.append(i); best=r.Obj2
+            df=df.iloc[keep].reset_index(drop=True)
+            # Preserve exact zero-loss endpoint; near duplicates are display-only.
+            keep=[len(df)-1]
+            for i in range(len(df)-2,-1,-1):
+                if np.max(abs((df.iloc[i][['Obj1','Obj2']].to_numpy(float)-
+                              df.iloc[keep[-1]][['Obj1','Obj2']].to_numpy(float))/scale))>1e-10:
+                    keep.append(i)
+            return df.iloc[keep[::-1]].reset_index(drop=True)
+        front=clean(records)
+        if adaptive_gap is not None:
+            for _ in range(16):
+                xy=front[['Obj1','Obj2']].to_numpy()/scale
+                gap=np.linalg.norm(np.diff(xy,axis=0),axis=1)
+                selected=np.flatnonzero(gap>adaptive_gap)
+                if not len(selected) or len(records)>=max_points:
+                    break
+                selected=selected[np.argsort(gap[selected])[::-1]][:max_points-len(records)]
+                existing={r['lambda'] for r in records}
+                added=[]
+                for i in selected:
+                    left,right=sorted(front.iloc[[i,i+1]]['lambda'].to_numpy())
+                    lam=(right/10 if left==0 else left*10 if np.isinf(right) else np.sqrt(left*right))
+                    if lam not in existing:
+                        added.append(self._weighted_solution(lam));existing.add(lam)
+                if not added:
+                    break
+                records.extend(added);front=clean(records)
+        self.reference_diagnostics=pd.DataFrame(records)
+        return front
 
-        # Zero current is the exactly known minimum-loss endpoint.
-        x_zero = np.zeros(self.n_var)
-        f1, f2 = self.evaluate(x_zero)
-        records.append([*x_zero, f1, f2, np.inf])
-        cols = [f"X{i}" for i in range(1, self.n_var+1)] + ["Obj1", "Obj2", "lambda"]
-        df = pd.DataFrame(records, columns=cols)
-        df = df.sort_values(["Obj1", "Obj2"])
-        # Numerical duplicates close to the endpoints can be kept; they remain valid references.
-        return df.reset_index(drop=True)
+    def box_objective_extrema(self, x, delta_j=None):
+        """Exact convex-box extrema, up to least-squares numerical tolerance.
 
-    def exact_box_sensitivity(self, x: np.ndarray,
-                              delta_j: float | None = None) -> tuple[float, float]:
-        """EXACT worst |Delta f1| and |Delta f2| for independent box perturbations.
-
-        For f1 (convex quadratic): maximum over box is at one of 2^10 corners;
-        minimum is the bounded least-squares solution. For f2, both extrema
-        have simple closed forms. No model re-evaluation or MC needed.
-        Bounds are clipped to the admissible design domain.
+        f1 maximum is at a vertex, f1 minimum is bounded least squares;
+        f2 extrema are separable. No padding outside the feasible box is used.
         """
-        x = np.asarray(x, dtype=float).reshape(self.n_var)
-        step = (self.s.independent_j_tolerance if delta_j is None else delta_j) / self.s.j_scale
-        if step < 0:
-            raise ValueError("delta_j must be nonnegative")
-        lo = np.maximum(self.lower, x-step)
-        hi = np.minimum(self.upper, x+step)
-        if np.any(lo > hi):
-            raise ValueError("x lies outside allowed design range")
-        f1, f2 = self.evaluate(x)
-        n = 1 << self.n_var
-        vertices = ((np.arange(n, dtype=np.uint32)[:, None] >>
-                     np.arange(self.n_var, dtype=np.uint32)) & 1)
-        corners = lo + vertices*(hi-lo)
-        residuals = self.K @ corners.T - self.b_target[:, None]
-        f1_max = np.max(np.mean(residuals**2, axis=0))
-        res_min = lsq_linear(self.K, self.b_target,
-                             bounds=(lo-1e-14, hi+1e-14), tol=1e-11, max_iter=500)
-        if not res_min.success:
-            raise RuntimeError("Sensitivity minimum solve failed")
-        f1_min = self.evaluate(res_min.x)[0]
-        s1 = max(float(f1_max-f1), float(f1-f1_min), 0.0)
-        farthest_abs = np.maximum(abs(lo), abs(hi))
-        nearest_abs = np.where((lo <= 0) & (hi >= 0),
-                               0.0, np.minimum(abs(lo), abs(hi)))
-        f2_max = np.mean(farthest_abs**2)
-        f2_min = np.mean(nearest_abs**2)
-        s2 = max(float(f2_max-f2), float(f2-f2_min), 0.0)
-        return s1, s2
+        x=np.asarray(x,dtype=float).reshape(self.n_var)
+        step=(self.s.independent_j_tolerance if delta_j is None else delta_j)/self.s.j_scale
+        if not np.isfinite(x).all() or np.any(x<self.lower) or np.any(x>self.upper):
+            raise ValueError('Sensitivity center must be feasible and finite')
+        if not np.isfinite(step) or step<0:
+            raise ValueError('delta_j must be finite and nonnegative')
+        if step==0:
+            values=np.asarray(self.evaluate(x))
+            return values,values.copy()
+        lo=np.maximum(self.lower,x-step);hi=np.minimum(self.upper,x+step)
+        n=1<<self.n_var
+        bits=((np.arange(n,dtype=np.uint32)[:,None]>>np.arange(self.n_var,dtype=np.uint32))&1)
+        corners=lo+bits*(hi-lo)
+        residuals=corners@self.K.T-self.b_target
+        f1_max=np.mean(residuals**2,axis=1).max()
+        result=lsq_linear(self.K,self.b_target,bounds=(lo,hi),tol=1e-12,max_iter=1000)
+        if not result.success:
+            raise RuntimeError('Sensitivity minimum solve failed: '+result.message)
+        f1_min=self.evaluate(result.x)[0]
+        near=np.where((lo<=0)&(hi>=0),0.,np.minimum(abs(lo),abs(hi)))
+        far=np.maximum(abs(lo),abs(hi))
+        return np.array([f1_min,np.mean(near**2)]),np.array([f1_max,np.mean(far**2)])
+
+    def exact_box_sensitivity(self, x, delta_j=None):
+        """Legacy absolute objective deviations, preserved for existing plots."""
+        low,high=self.box_objective_extrema(x,delta_j)
+        value=np.asarray(self.evaluate(x))
+        return tuple(np.maximum(abs(low-value),abs(high-value)))
+
+    def exact_relative_box_sensitivity(self, x, delta_j=None, floors=(1e-3,1e-3)):
+        """Maximal symmetric relative variations used by ALSF, not absolute deltas."""
+        from src.local_variation import relative_pairwise_variation
+        low,high=self.box_objective_extrema(x,delta_j)
+        value=np.asarray(self.evaluate(x))
+        return np.maximum(relative_pairwise_variation(value,low,floors),
+                          relative_pairwise_variation(value,high,floors))
 
 
 if __name__ == "__main__":

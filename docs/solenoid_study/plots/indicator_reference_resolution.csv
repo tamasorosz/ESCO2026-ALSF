@@ -1,0 +1,7 @@
+run,delta_hv_fine_minus_coarse,delta_igd_fine_minus_coarse
+alsf_seed13,0.0,2.681396694472881e-06
+alsf_seed42,0.0,2.7058260137651814e-06
+alsf_seed97,0.0,2.7409111931645316e-06
+baseline_seed13,0.0,2.684233414516641e-06
+baseline_seed42,0.0,2.7159722975687688e-06
+baseline_seed97,0.0,2.7044417063668696e-06

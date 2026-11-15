@@ -1,0 +1,34 @@
+{
+  "python": "3.12.14",
+  "platform": "Linux",
+  "packages": {
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.9.1",
+    "matplotlib": "3.11.2",
+    "pymoo": "0.6.2",
+    "pytest": "9.2.0"
+  },
+  "openblas_num_threads": 1,
+  "seeds": [
+    13,
+    42,
+    97
+  ],
+  "matrix_singular_values": [
+    2.7747648745808484,
+    0.184964859721085,
+    0.009010444652414976,
+    0.00039871496211337453,
+    1.6625190139571708e-05,
+    6.598483644887701e-07,
+    2.4390915972052892e-08,
+    7.033034666956144e-10,
+    1.1271009950276514e-11,
+    9.53234956867264e-14
+  ],
+  "matrix_condition_number": 29108929069281.17,
+  "base_commit": "c1506ca",
+  "note": "Shared cloud CPU: wall times are descriptive, not controlled hardware benchmarks."
+}

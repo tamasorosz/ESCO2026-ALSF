@@ -1,0 +1,38 @@
+{
+  "mode": "alsf",
+  "seed": 42,
+  "generations": 8,
+  "pop_size": 24,
+  "offsprings": 24,
+  "flag_start": 3,
+  "sbx_prob": 0.9,
+  "sbx_eta": 5,
+  "pm_prob": 1.0,
+  "pm_eta": 5,
+  "tolerances": [
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1
+  ],
+  "local_radius": 1.0,
+  "local_min_samples": 10,
+  "dbscan_eps": 1.0,
+  "dbscan_min_samples": 10,
+  "exclusion_radius": 1.0,
+  "objective_thresholds": [
+    0.1,
+    0.1
+  ],
+  "objective_floors": [
+    0.001,
+    0.001
+  ],
+  "partition_enabled": false
+}

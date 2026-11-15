@@ -1,0 +1,9 @@
+{
+  "tests_passed": 40,
+  "reference_nondominated": true,
+  "zero_loss_endpoint": true,
+  "matched_budgets": true,
+  "all_pre_activation_metrics_identical": true,
+  "matched_settings": true,
+  "total_optimization_evaluations": 120000
+}

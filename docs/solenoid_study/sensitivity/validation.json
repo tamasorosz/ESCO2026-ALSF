@@ -1,0 +1,18 @@
+{
+  "n_audited": 66,
+  "n_empirical_stable": 12,
+  "n_verified_sensitive": 14,
+  "n_nei": 40,
+  "n_exact_sensitive": 66,
+  "n_false_stable": 12,
+  "false_stable_rate": 1.0,
+  "sensitive_precision": 1.0,
+  "sensitive_recall_classified": 0.5384615384615384,
+  "sensitive_detection_all": 0.21212121212121213,
+  "classification_coverage": 0.3939393939393939,
+  "reference_points_tested": 61,
+  "reference_exact_sensitive": 61,
+  "maximum_random_bound_violation": 4.440892098500626e-16,
+  "seconds": 0.4797655579968705,
+  "validated": true
+}

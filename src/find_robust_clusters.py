@@ -57,7 +57,7 @@ def classify_dataframe(archive: pd.DataFrame, tolerances, t1, t2,
         raise ValueError("dbscan_eps must be finite and positive")
     if int(dbscan_min_samples) != dbscan_min_samples or dbscan_min_samples < 1:
         raise ValueError("dbscan_min_samples must be a positive integer")
-    if not np.isfinite(partition_width) or partition_width <= 0:
+    if partition_width is not None and (not np.isfinite(partition_width) or partition_width <= 0):
         raise ValueError("partition_width must be finite and positive")
     counts = state.update(X, F)
     normalized = X / delta
@@ -101,21 +101,27 @@ def classify_dataframe(archive: pd.DataFrame, tolerances, t1, t2,
     # Fixed, origin-anchored half-open cells give diameter <= partition_width
     # in normalized L-infinity distance, including DBSCAN noise. No merging,
     # target count, or objective evaluations. These are reporting regions only.
-    cells = np.floor(normalized / partition_width).astype(np.int64)
-    _, region_ids = np.unique(cells, axis=0, return_inverse=True)
-    archive['region_id'] = region_ids
-    region_status = np.full(len(X), 'NEI', dtype=object)
-    representatives = np.zeros(len(X), dtype=bool)
-    for indices in archive.groupby('region_id', sort=False).indices.values():
-        statuses = set(flag[indices])
-        region_status[indices] = next(iter(statuses)) if len(statuses) == 1 else 'mixed'
-        stable = indices[flag[indices] == 'robust']
-        if len(stable):
-            center = normalized[stable].mean(axis=0)
-            candidate = stable[np.argmin(np.max(np.abs(normalized[stable]-center), axis=1))]
-            representatives[candidate] = True
-    archive['region_status'] = region_status
-    archive['is_stable_representative'] = representatives
+    if partition_width is None:
+        # High-dimensional reporting: no sparse cell objects are materialized.
+        region_ids = np.zeros(0, dtype=int)
+        archive = archive.drop(columns=['region_id', 'region_status',
+                    'is_stable_representative'], errors='ignore')
+    else:
+        cells = np.floor(normalized / partition_width).astype(np.int64)
+        _, region_ids = np.unique(cells, axis=0, return_inverse=True)
+        archive['region_id'] = region_ids
+        region_status = np.full(len(X), 'NEI', dtype=object)
+        representatives = np.zeros(len(X), dtype=bool)
+        for indices in archive.groupby('region_id', sort=False).indices.values():
+            statuses = set(flag[indices])
+            region_status[indices] = next(iter(statuses)) if len(statuses) == 1 else 'mixed'
+            stable = indices[flag[indices] == 'robust']
+            if len(stable):
+                center = normalized[stable].mean(axis=0)
+                candidate = stable[np.argmin(np.max(np.abs(normalized[stable]-center), axis=1))]
+                representatives[candidate] = True
+        archive['region_status'] = region_status
+        archive['is_stable_representative'] = representatives
 
     stats = {
         'n_clusters': len(flags_by_cluster),
@@ -125,7 +131,8 @@ def classify_dataframe(archive: pd.DataFrame, tolerances, t1, t2,
         'n_mixed_clusters': sum(v == 'mixed' for v in flags_by_cluster.values()),
         'largest_cluster': int(archive.cluster_n.max()) if len(X) else 0,
         'n_regions': len(np.unique(region_ids)),
-        'n_mixed_regions': int(archive.groupby('region_id').region_status.first().eq('mixed').sum()),
+        'n_mixed_regions': (int(archive.groupby('region_id').region_status.first().eq('mixed').sum())
+                            if partition_width is not None else 0),
         'n_noise': int(np.count_nonzero(labels == -1)),
         'n_verified_violations': int(bad.sum()),
     }
