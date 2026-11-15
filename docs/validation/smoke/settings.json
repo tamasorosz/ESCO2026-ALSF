@@ -1,0 +1,18 @@
+{
+  "mode": "alsf",
+  "generations": 8,
+  "pop_size": 24,
+  "offsprings": 24,
+  "seed": 42,
+  "tag": "evidence_validated",
+  "flag_start": 3,
+  "tol": 0.1,
+  "objective_threshold": 0.1,
+  "objective_floor": 0.001,
+  "min_samples": 10,
+  "dbscan_eps": 1.0,
+  "dbscan_min_samples": 10,
+  "local_radius": 1.0,
+  "exclusion_radius": 1.0,
+  "partition_width": 1.0
+}

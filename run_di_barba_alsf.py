@@ -121,7 +121,7 @@ def main():
     )
     result = minimize(problem, algorithm, get_termination('n_gen', N_GEN),
                       seed=SEED, callback=callback,
-                      save_history=False, verbose=True)
+                      save_history=False, verbose=True, copy_algorithm=False)
 
     if result.X is None or result.F is None:
         raise RuntimeError('ALSF did not produce a feasible Pareto front')

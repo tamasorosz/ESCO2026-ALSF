@@ -35,6 +35,11 @@ def main():
     p.add_argument('--objective-floor', type=float, default=1e-3,
                    help='Explicit numerical policy for near-zero objective values')
     p.add_argument('--min-samples', type=int, default=10)
+    p.add_argument('--dbscan-eps', type=float, default=1.0)
+    p.add_argument('--dbscan-min-samples', type=int, default=10)
+    p.add_argument('--local-radius', type=float, default=1.0)
+    p.add_argument('--exclusion-radius', type=float, default=1.0)
+    p.add_argument('--partition-width', type=float, default=1.0)
     args = p.parse_args()
     if args.offsprings is None:
         args.offsprings = args.pop_size
@@ -63,16 +68,16 @@ def main():
         def __init__(self):
             super().__init__(n_var=2,n_obj=2,n_ieq_constr=0,n_eq_constr=0,
                              xl=LOWER,xu=UPPER,vtype=float)
-            self.cache = {}
+            self.evaluation_cache = {}
         def _evaluate(self, x, out, *a, **kw):
             coords = np.round(np.asarray(x, dtype=float), 8)
             key = tuple(coords.tolist())
-            if key not in self.cache:
+            if key not in self.evaluation_cache:
                 f = evaluate(coords)
-                self.cache[key] = tuple(float(v) for v in f)
+                self.evaluation_cache[key] = tuple(float(v) for v in f)
                 pd.DataFrame([[*coords,*f]],columns=COLUMNS).to_csv(
                     archive_path,mode='a',header=not archive_path.exists(),index=False)
-            out['F'] = self.cache[key]
+            out['F'] = self.evaluation_cache[key]
 
     class BaselineCallback(Callback):
         def notify(self, algorithm):
@@ -87,17 +92,20 @@ def main():
         from src.preprocessing import OffspringRepair
         from src.postprocessing import FlagCallback
         tolerances=np.array([args.tol,args.tol])
-        repair=OffspringRepair(str(archive_path),problem.cache,1.0,
+        repair=OffspringRepair(str(archive_path),problem.evaluation_cache,args.exclusion_radius,
                                min_neighbours=1,decimal_places=8,
                                max_resample_attempts=1000,
                                rng=np.random.default_rng(args.seed),
                                tolerances=tolerances)
-        callback=FlagCallback(str(archive_path),str(process_path),1.0,
+        callback=FlagCallback(str(archive_path),str(process_path),args.dbscan_eps,
                               args.objective_threshold,args.objective_threshold,
-                              args.min_samples,0.0,args.flag_start,
+                              args.dbscan_min_samples,0.0,args.flag_start,
                               repair,tolerances=tolerances,
                               objective_floors=(args.objective_floor,
-                                                args.objective_floor))
+                                                args.objective_floor),
+                              local_radius=args.local_radius,
+                              local_min_samples=args.min_samples,
+                              partition_width=args.partition_width)
 
     algorithm=NSGA2(pop_size=args.pop_size,n_offsprings=args.offsprings,
                      sampling=FloatRandomSampling(),
@@ -128,7 +136,7 @@ def main():
     front.to_csv(pareto_path,index=False)
     report={'mode':args.mode,'seed':args.seed,'generations':args.generations,
             'pymoo_evaluations':int(result.algorithm.evaluator.n_eval),
-            'unique_archive_points':len(problem.cache),
+            'unique_archive_points':len(problem.evaluation_cache),
             'pareto_size':len(front)}
     if args.mode == 'alsf':
         if not process_path.exists():

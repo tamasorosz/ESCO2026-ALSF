@@ -25,9 +25,9 @@ from scipy.spatial.distance import cdist
 
 COLUMN_ALIASES = {
     'generation': ['generation', 'gen', 'n_gen'],
-    'robust': ['n_robust_clusters', 'robust_clusters', 'n_robust', 'robust'],
+    'robust': ['n_robust_clusters', 'robust_clusters'],
     'nonrobust': ['n_non_robust_clusters', 'n_nonrobust_clusters',
-                  'non_robust_clusters', 'n_non_robust', 'non_robust', 'non-robust'],
+                  'non_robust_clusters'],
     'regenerated': ['n_regenerated', 'regenerated', 'n_regenerated_offspring',
                     'regenerated_offspring', 'offspring_regenerated', 'rejected_offspring'],
     'attempts': ['n_attempts', 'attempts', 'resample_attempts',
@@ -72,42 +72,21 @@ def read_archive(path: Path) -> pd.DataFrame:
 
 
 def representative_indices(df: pd.DataFrame) -> np.ndarray:
-    """Find medoids of robust points IN each DBSCAN component.
-
-    For old ALSF honour explicit is_medoid when it refers to a robust row.
-    For Pavel version, is_medoid is for the whole mixed component, so it need
-    not be robust: compute the medoid restricted to robust points instead.
-    This is used for plotting ONLY, not for determining robustness.
-    """
+    """Actual locally stable members of bounded regions, never certificates."""
+    if 'is_stable_representative' in df:
+        chosen = df.is_stable_representative.astype(str).str.lower().isin(['true', '1'])
+        if (chosen & df.flag.ne('robust')).any():
+            raise ValueError('Stable representative has a non-stable pointwise label')
+        return np.flatnonzero(chosen)
+    # Historic archives: retain only whole-component stable representatives.
     if 'cluster_id' not in df:
-        return np.array([],dtype=int)
-    result=[]
-    cls=pd.to_numeric(df['cluster_id'],errors='coerce').fillna(-1).to_numpy()
-    robust=(df.flag=='robust').to_numpy()
-    X=df[['X1','X2']].to_numpy(dtype=float)
-    medoid=(df['is_medoid'].astype(str).str.lower().isin(['true','1','yes']).to_numpy()
-            if 'is_medoid' in df else np.zeros(len(df),dtype=bool))
-    for cid in np.unique(cls[cls >= 0]):
-        members=np.flatnonzero(cls == cid)
-        # The *entire* component must be robust. A locally robust point
-        # inside a mixed/non-robust component is not a robust medoid.
-        if not robust[members].all():
-            continue
-        if 'cluster_status' in df and not (df.iloc[members]['cluster_status'] == 'robust').all():
-            continue
-        ids=members
-        old_med=ids[medoid[ids]]
-        if len(old_med)==1:
-            result.append(int(old_med[0]))
-            continue
-        pts=X[ids]
-        if len(ids)>1500:
-            # Avoid quadratic memory for exceptionally large clusters.
-            mu=np.mean(pts,axis=0)
-            result.append(int(ids[np.argmin(np.max(np.abs(pts-mu),axis=1))]))
-        else:
-            result.append(int(ids[np.argmin(cdist(pts,pts,metric='chebyshev').sum(axis=1))]))
-    return np.asarray(result,dtype=int)
+        return np.array([], dtype=int)
+    chosen = []
+    for cid, group in df.reset_index(drop=True).groupby('cluster_id'):
+        if cid >= 0 and group.flag.eq('robust').all():
+            pts = group[['X1', 'X2']].to_numpy(float)
+            chosen.append(group.index[np.argmin(np.max(abs(pts-pts.mean(axis=0)), axis=1))])
+    return np.asarray(chosen, dtype=int)
 
 
 def prepare_process(path: Path) -> pd.DataFrame:
@@ -128,29 +107,22 @@ def prepare_process(path: Path) -> pd.DataFrame:
     if (result.attempts < result.regenerated).any():
         raise ValueError('n_attempts < n_regenerated: inconsistent repair counters')
     for optional in ('n_repair_calls','n_offspring_seen',
-                     'n_forbidden_candidates','n_exclusion_centers'):
+                     'n_forbidden_candidates','n_exclusion_centers',
+                     'n_robust','n_non_robust','n_nei','n_mixed_clusters',
+                     'n_nei_clusters','n_regions','n_mixed_regions','largest_cluster'):
         if optional in raw:
             result[optional]=pd.to_numeric(raw[optional],errors='raise')
             if (result[optional]<0).any() or not np.isfinite(result[optional]).all():
                 raise ValueError(f'{optional}: invalid counts')
     if (result[['robust','nonrobust','regenerated','attempts']]<0).any().any():
         raise ValueError('Process counts must be nonnegative')
-    # The ALSF callback only records rows from FLAG_START_GEN onward.
-    result=result.set_index('generation').sort_index()
-    last=int(result.index.max())
-    if last>100000: raise ValueError('Implausible generation counter')
-    result=result.reindex(range(0,last+1),fill_value=0).rename_axis('generation').reset_index()
-    return result
+    # Unrecorded warmup and gaps are unknown, never fabricated zeros.
+    return result.sort_values('generation').reset_index(drop=True)
 
 
 def plot_colors():
-    plt.rcParams.update({
-        'font.family':'DejaVu Sans', 'font.size':12,
-        'axes.labelsize':15, 'axes.titlesize':16,
-        'xtick.labelsize':12,'ytick.labelsize':12,
-        'legend.fontsize':11, 'axes.spines.top':True,
-        'axes.spines.right':True,'savefig.facecolor':'white',
-    })
+    from plot_alsf_elsevier import style
+    style()
 
 
 def make_scatter(ax,archive,space,original_axes,draw_ab=False):
@@ -159,9 +131,9 @@ def make_scatter(ax,archive,space,original_axes,draw_ab=False):
     Y=archive[ycol].to_numpy(dtype=float)
     is_bad=(archive.flag=='non-robust').to_numpy()
     # NEI plus non-medoid robust points: gray as in the original plots.
-    ax.scatter(X,Y,s=6,c='#c9c9c9',alpha=.37,edgecolors='none',label='noise',zorder=1,rasterized=True)
+    ax.scatter(X,Y,s=6,c='#c9c9c9',alpha=.37,edgecolors='none',label='Archived solutions',zorder=1,rasterized=True)
     ax.scatter(X[is_bad],Y[is_bad],s=10,c='#ffad32',alpha=.77,
-               edgecolors='none',label='non-robust point',zorder=2,rasterized=True)
+               edgecolors='none',label='Verified violation endpoint',zorder=2,rasterized=True)
     representatives=representative_indices(archive)
     if len(representatives):
         palette=plt.get_cmap('gist_rainbow')
@@ -173,10 +145,10 @@ def make_scatter(ax,archive,space,original_axes,draw_ab=False):
             ax.scatter([X[k]],[Y[k]],marker='x',s=27,linewidths=1.3,
                        color='black',zorder=5)
         ax.scatter([],[],s=85,color='black',marker='x',linewidths=1.8,
-                   label='robust medoid')
+                   label='Locally stable representative')
     else:
-        ax.scatter([],[],s=85,color='black',marker='x',label='robust medoid (none)')
-        print('NOTICE: no wholly robust DBSCAN component: no robust medoids plotted')
+        ax.scatter([],[],s=85,color='black',marker='x',label='Locally stable representative (none)')
+        print('NOTICE: no locally stable representatives available')
     ax.set_xlabel('X1' if space=='decision' else 'Objective 1')
     ax.set_ylabel('X2' if space=='decision' else 'Objective 2')
     ax.grid(False)
@@ -207,9 +179,12 @@ def make_scatter(ax,archive,space,original_axes,draw_ab=False):
                                  fill=False,edgecolor='blue',lw=2,zorder=6))
             ax.text(1.5,1.3,'B',fontsize=24,zorder=7)
         else:
-            ax.add_patch(Ellipse((11.0,14.5),4,8,angle=55,
-                                 fill=False,edgecolor='blue',lw=2,zorder=6))
-            ax.text(5,15,'B',fontsize=25,zorder=7)
+            # Map the exact same archive rows, not a hand-drawn objective ellipse.
+            from plot_original_three_ALSF import masks
+            for name, selected in masks(archive).items():
+                ax.scatter(X[selected], Y[selected], facecolors='none',
+                           edgecolors='#345E89', s=20, linewidths=.6,
+                           label=f'Region {name} archive samples', zorder=6)
     loc='lower right' if space=='decision' else 'lower left'
     ax.legend(loc=loc,frameon=True,edgecolor='0.3',facecolor='white',framealpha=.94)
 
@@ -233,26 +208,39 @@ def plots(archive,process,outdir,reference_axes=False,annotate_ab=False,watermar
 
     if process is not None:
         gen=process.generation.to_numpy()
-        fig,axes=plt.subplots(2,1,figsize=(15,12),sharex=True,
-                               gridspec_kw={'height_ratios':[1.0,1.0]})
-        r=process.robust.to_numpy()
-        nr=process.nonrobust.to_numpy()
-        axes[0].stackplot(gen,r,nr,colors=['#4caf50','#e45151'],alpha=.98,
-                          labels=['Robust','Non-robust'])
-        axes[0].set_title('Robust / Non-robust per generation')
-        axes[0].set_ylabel('Clusters')
-        axes[0].legend(loc='upper left')
+        fig,axes=plt.subplots(3,1,figsize=(7.2,8.5),sharex=True)
+        for col, label, color in [('robust','All locally stable','#217A6B'),
+                ('nonrobust','All verified sensitive','#C35B36'),
+                ('n_nei_clusters','All NEI','#B5B8BC'),
+                ('n_mixed_clusters','Mixed','#7563A8')]:
+            if col in process:
+                axes[0].plot(gen,process[col],label=label,color=color)
+        for col, label in [('n_regions','Bounded regions'), ('n_mixed_regions','Mixed regions')]:
+            if col in process:
+                axes[0].plot(gen,process[col],ls='--',label=label)
+        axes[0].set_ylabel('Components / regions')
+        axes[0].legend(loc='upper left',ncol=2)
+        for col,label,color in [('n_robust','Locally stable','#217A6B'),
+                ('n_non_robust','Verified sensitive','#C35B36'),
+                ('n_nei','NEI','#B5B8BC')]:
+            if col in process:
+                axes[1].plot(gen,process[col],label=label,color=color)
+        if 'n_robust' not in process:
+            axes[1].text(.5,.5,'Pointwise history not recorded',ha='center',transform=axes[1].transAxes)
+        else:
+            axes[1].legend(loc='upper left')
+        axes[1].set_ylabel('Archive samples')
         reg=process.regenerated.to_numpy()
         att=process.attempts.to_numpy()
-        axes[1].bar(gen,reg,width=.9,color='#638fb9',label='Regenerated')
+        axes[2].bar(gen,reg,width=.9,color='#638fb9',label='Regenerated')
         # The Pavel repair counts EVERY resampling attempt; each successful
         # regeneration therefore already uses at least one attempt. Plot only
         # the additional attempts as a red cap, so total height = attempts.
         extra=np.maximum(att-reg,0)
-        axes[1].bar(gen,extra,width=.9,bottom=reg,color='#ed9292',alpha=.9,
+        axes[2].bar(gen,extra,width=.9,bottom=reg,color='#ed9292',alpha=.9,
                     label='Additional attempts',zorder=2)
-        axes[1].set_title('Archive repair — regenerated offspring & resample attempts per generation')
-        axes[1].set_ylabel('Count')
+        axes[2].set_title('Archive repair — regenerated offspring & resample attempts per generation')
+        axes[2].set_ylabel('Count')
         if reg.sum() == 0 and att.sum() == 0:
             if 'n_offspring_seen' in process:
                 seen=int(process.n_offspring_seen.sum())
@@ -260,12 +248,12 @@ def plots(archive,process,outdir,reference_axes=False,annotate_ab=False,watermar
                 annotation=f'0 regenerated; {seen} offspring checked; {forbidden} forbidden candidates'
             else:
                 annotation='0 regenerated; repair invocation was not logged'
-            axes[1].text(.5,.55,annotation,ha='center',va='center',
-                         transform=axes[1].transAxes,fontsize=12,
+            axes[2].text(.5,.55,annotation,ha='center',va='center',
+                         transform=axes[2].transAxes,fontsize=12,
                          bbox={'facecolor':'white','edgecolor':'#aaaaaa','alpha':.95})
-            axes[1].set_ylim(0,1)
-        axes[1].set_xlabel('Generation')
-        axes[1].legend(loc='upper left')
+            axes[2].set_ylim(0,1)
+        axes[2].set_xlabel('Generation')
+        axes[2].legend(loc='upper left')
         for ax in axes:
             ax.grid(True,ls='--',color='0.78',alpha=.75)
             ax.set_axisbelow(True)
@@ -291,7 +279,7 @@ def main(argv=None):
     a=read_archive(args.archive)
     p=prepare_process(args.process)
     print('Archive:',len(a),'points; flags:',a.flag.value_counts().to_dict())
-    print('Process:',len(p),'generation records (including zero-filled warmup)')
+    print('Process:',len(p),'recorded generation records')
     print('Recorded repair totals:',
           {k:int(p[k].sum()) for k in ('regenerated','attempts')})
     if 'n_offspring_seen' in p:

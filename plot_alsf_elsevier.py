@@ -246,6 +246,14 @@ def main(argv=None):
         ap.error('Use --run / --archive+--process or --log')
     archive=args.archive or (args.run/'archive.csv' if args.run else None)
     process=args.process or (args.run/'process.csv' if args.run else None)
+    # Revised CSVs share one interpretation across all publication entrypoints.
+    if archive is not None and process is not None and process.is_file():
+        header = pd.read_csv(process, nrows=0)
+        if 'n_mixed_clusters' in header:
+            from plot_three_figures import read_archive, prepare_process, plots
+            plots(read_archive(archive), prepare_process(process), args.outdir,
+                  args.reference_axes, args.annotate_ab)
+            return
     style()
     had_any=False
     if archive is not None:

@@ -16,7 +16,7 @@ def frame(points, fs):
 def test_chebyshev_box_accepts_diagonal_that_l2_misses():
     # each parameter is within 0.1; L2-normalized distance = sqrt(2) > 1
     data = frame([[0,0],[0.09,0.09],[2,2]], [[1,1],[1.04,1.02],[1.0,1.0]])
-    result, stats = classify_dataframe(data, [0.1,0.1], 0.1,0.1, min_samples=2,
+    result, stats = classify_dataframe(data, [0.1,0.1], 0.1,0.1, min_samples=2, dbscan_min_samples=2,
                                         floors=(0.01,0.01))
     assert list(result.flag) == ['robust','robust','NEI']
     assert result.loc[0,'cluster_id'] == result.loc[1,'cluster_id']
@@ -41,7 +41,7 @@ def test_cluster_chaining_does_not_spread_violation_to_distant_points():
     points = [[0],[0.08],[0.16],[0.24]]
     fs = [[1,1],[1,1],[1.02,1],[1.5,1]]
     out, stats = classify_dataframe(frame(points,fs), .1,.1,.1,
-                                     min_samples=2, floors=(.01,.01))
+                                     min_samples=2, dbscan_min_samples=2, floors=(.01,.01))
     assert stats['n_clusters'] == 1
     assert list(out.flag) == ['robust','robust','non-robust','non-robust']
 
@@ -49,10 +49,10 @@ def test_cluster_chaining_does_not_spread_violation_to_distant_points():
 def test_new_point_updates_previous_violation_incrementally():
     state = LocalVariationState([.1,.1], (.1,.1), (.01,.01))
     first = frame([[0,0],[2,2]],[[1,1],[1,1]])
-    out1,_ = classify_dataframe(first, [.1,.1], .1,.1, min_samples=2,state=state)
+    out1,_ = classify_dataframe(first, [.1,.1], .1,.1, min_samples=2, dbscan_min_samples=2,state=state,floors=(.01,.01))
     assert not out1.verified_violation.any()
     second = frame([[0,0],[2,2],[0.05,0.05]],[[1,1],[1,1],[2,1]])
-    out2,_ = classify_dataframe(second, [.1,.1], .1,.1, min_samples=2,state=state)
+    out2,_ = classify_dataframe(second, [.1,.1], .1,.1, min_samples=2, dbscan_min_samples=2,state=state,floors=(.01,.01))
     assert out2.verified_violation.tolist()==[True,False,True]
 
 

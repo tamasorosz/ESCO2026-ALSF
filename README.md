@@ -65,3 +65,12 @@ Points classified `non-robust` are observed endpoints of at least one violating 
 - The classifier's `verified_violation` is *archive-based evidence*, not an exact worst-case result over every tolerance box. True independent 10D worst-case values can be computed with `DiBarbaSolenoid.exact_box_sensitivity` as a separate diagnostic.
 - The geometry of tolerance boxes can leave many NEI samples in ten dimensions even with `L_inf` DBSCAN; count NEI and runtime explicitly.
 - A full 200-generation run has not yet been executed in this chat environment. GitHub Actions provides an integration smoke check.
+
+## Revised evidence and partitioning methodology
+
+See [the revised ALSF method](docs/ALSF_method.md) for independent DBSCAN,
+local-evidence, exclusion, and bounded-region parameters, mixed-component
+summaries, revised CSV columns, publication plots, and independent A/B audits.
+This supersedes the earlier shared-radius/density description above.
+Measured short-run artifacts and explicit limitations are in
+[the validation report](docs/validation/REPORT.md).

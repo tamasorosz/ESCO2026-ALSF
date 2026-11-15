@@ -102,20 +102,8 @@ def masks(a):
 
 
 def representatives(a, min_stable_in_component=3):
-    """One empirical stable member per DBSCAN component, not a 'robust cluster'."""
-    x=a[['X1','X2']].to_numpy(float)
-    flags=a.flag.to_numpy()
-    cid=a.cluster_id.to_numpy()
-    out=[]
-    for label in np.unique(cid[cid>=0]):
-        ids=np.flatnonzero((cid==label)&(flags=='robust'))
-        if len(ids) < min_stable_in_component:
-            continue
-        local=x[ids] / .1
-        midpoint=np.median(local,axis=0)
-        idx=int(ids[np.argmin(np.max(np.abs(local-midpoint),axis=1))])
-        out.append(idx)
-    return np.asarray(out,dtype=int)
+    from plot_three_figures import representative_indices
+    return representative_indices(a)
 
 
 def save(fig,out,stem):
@@ -199,38 +187,12 @@ def scatter_fig(a,out,which,rep,ab):
 
 
 def evolution_fig(p,a,out):
-    g=p.generation.to_numpy(float)
-    robust=p.n_robust_clusters.to_numpy(float)
-    nonrobust=p.n_non_robust_clusters.to_numpy(float)
-    regen=p.n_regenerated.to_numpy(float)
-    extra=(p.n_attempts-p.n_regenerated).to_numpy(float)
-    fig,axs=plt.subplots(2,1,figsize=(12.3,8.6),sharex=True)
-    axs[0].stackplot(g,robust,nonrobust,
-                     colors=[PALETTE['robust'],PALETTE['nonrobust']],
-                     labels=['Robust clusters (entire component)',
-                             'Non-robust clusters (any violation)'])
-    axs[0].set_ylabel('Clusters')
-    axs[0].set_title('Robust / non-robust per generation',fontsize=13)
-    axs[0].legend(loc='upper left',frameon=True,fontsize=9)
-    if 'n_robust' in p and 'n_archive' in p:
-        stable=int(p.n_robust.iloc[-1]); total=int(p.n_archive.iloc[-1])
-        axs[0].text(.985,.975,
-                    'Locally stable samples at end: {:,} / {:,} ({:.1f}%)'.format(
-                      stable,total,100*stable/max(1,total)),
-                    ha='right',va='top',transform=axs[0].transAxes,fontsize=9,
-                    bbox=dict(fc='white',ec='.8',alpha=.94,pad=3))
-    axs[1].bar(g,regen,width=.92,label='Regenerated offspring',color=PALETTE['regen'])
-    axs[1].bar(g,extra,width=.92,bottom=regen,label='Additional attempts',
-               color=PALETTE['extra'])
-    axs[1].set_title('Archive repair — regenerated offspring & resample attempts per generation',fontsize=12)
-    axs[1].set_ylabel('Count');axs[1].set_xlabel('Generation')
-    axs[1].legend(loc='upper left',fontsize=9,frameon=True)
-    axs[1].set_xlim(0,max(200,g.max()))
-    for ax in axs:
-        ax.grid(True,ls='--',alpha=.36,color='#a0a0a0')
-        ax.set_axisbelow(True)
-    fig.tight_layout(h_pad=1.15)
-    save(fig,out,'test_evolution')
+    # Shared evolution implementation; pointwise and component counts separated.
+    from plot_three_figures import plots
+    prepared = p.rename(columns={'n_robust_clusters':'robust',
+        'n_non_robust_clusters':'nonrobust', 'n_regenerated':'regenerated',
+        'n_attempts':'attempts'})
+    plots(a,prepared,out,annotate_ab=True)
 
 
 def main():
@@ -245,9 +207,7 @@ def main():
     print('Stable representative counts:',len(rep))
     for name,sel in ab.items():
         print(name,'points:',sel.sum(),a.flag[sel].value_counts().to_dict())
-    scatter_fig(a,args.outdir,'design_space_clusters',rep,ab)
     evolution_fig(p,a,args.outdir)
-    scatter_fig(a,args.outdir,'pareto_front',rep,ab)
     print('Finished: exact original 3-file naming, updated labels, no fabricated data.')
 
 if __name__=='__main__':

@@ -1,0 +1,6 @@
+eps,n_clusters,n_robust_clusters,n_non_robust_clusters,n_nei_clusters,n_mixed_clusters,largest_cluster,n_regions,n_mixed_regions,n_noise,n_verified_violations
+1.0,0,0,0,0,0,0,183,0,192,0
+1.25,0,0,0,0,0,0,183,0,192,0
+1.5,0,0,0,0,0,0,183,0,192,0
+1.75,0,0,0,0,0,0,183,0,192,0
+2.0,0,0,0,0,0,0,183,0,192,0
