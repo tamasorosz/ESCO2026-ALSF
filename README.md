@@ -64,7 +64,7 @@ Points classified `non-robust` are observed endpoints of at least one violating 
 - The convex weighted-sum reference CSV gives globally solved points for the **defined** quadratic benchmark.
 - The classifier's `verified_violation` is *archive-based evidence*, not an exact worst-case result over every tolerance box. True independent 10D worst-case values can be computed with `DiBarbaSolenoid.exact_box_sensitivity` as a separate diagnostic.
 - The geometry of tolerance boxes can leave many NEI samples in ten dimensions even with `L_inf` DBSCAN; count NEI and runtime explicitly.
-- A full 200-generation run has not yet been executed in this chat environment. GitHub Actions provides an integration smoke check.
+- Three matched 200-generation seed pairs have now been executed for the defined convex solenoid model; see the [measured validation report](docs/solenoid_study/REPORT.md).
 
 ## Revised evidence and partitioning methodology
 
@@ -74,3 +74,13 @@ summaries, revised CSV columns, publication plots, and independent A/B audits.
 This supersedes the earlier shared-radius/density description above.
 Measured short-run artifacts and explicit limitations are in
 [the validation report](docs/validation/REPORT.md).
+
+## Ten-dimensional convex validation study
+
+Use the [phased solenoid validation workflow](docs/SOLENOID_VALIDATION.md) for
+an adaptively refined convex reference, independent exact relative sensitivity,
+matched baseline/ALSF evaluation budgets, multi-seed indicators and Figures A-E.
+It preserves the two-variable benchmark and ALSF evidence/exclusion rules.
+
+Measured results, reference CSVs, solver diagnostics, audits and all five PNG/PDF
+figures are in the [three-seed solenoid study](docs/solenoid_study/REPORT.md).

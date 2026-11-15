@@ -1,0 +1,9 @@
+generation,evaluations,n_archive,evidence_available,archive_seconds,n_repair_calls,n_offspring_seen,n_forbidden_candidates,n_regenerated,n_attempts,n_exclusion_centers
+1,24,24,False,4.989997250959277e-07,1,24,0,0,0,0
+2,48,48,False,5.760011845268309e-07,1,24,0,0,0,0
+3,72,72,False,4.709982022177428e-07,2,26,0,0,0,0
+4,96,96,False,4.300018190406263e-07,2,26,0,0,0,0
+5,120,120,False,4.76997229270637e-07,2,26,0,0,0,0
+6,144,144,False,4.7399953473359346e-07,1,24,0,0,0,0
+7,168,168,False,5.830006557516754e-07,1,24,0,0,0,0
+8,192,192,False,4.579997039400041e-07,1,24,0,0,0,0

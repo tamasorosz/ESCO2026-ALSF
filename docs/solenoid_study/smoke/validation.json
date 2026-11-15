@@ -1,0 +1,10 @@
+{
+  "validated": true,
+  "matched_trajectory": true,
+  "matched_evaluations": 192,
+  "reference_gate": true,
+  "exact_sensitivity_gate": true,
+  "implementation_tests_passed": 7,
+  "baseline_seconds": 0.03845181100041373,
+  "alsf_seconds": 0.08742042499943636
+}
