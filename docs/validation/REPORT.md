@@ -1,4 +1,8 @@
-# Validation report
+# Initial smoke validation report
+
+The full archive was subsequently supplied by the user. See the
+[full archive analysis](full_archive/REPORT.md) for measured 20,000-point
+results, revised figures, and the independent B-region counterexamples.
 
 Validation used Python 3.12, pymoo 0.6.2, seed 42. The original base checkout
 had 18 passing tests and two failures: mixed-component medoid handling and the

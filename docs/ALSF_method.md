@@ -89,8 +89,13 @@ from pymoo's own method cache, so cache metadata cannot inflate evaluation count
 The three figures show the same measured archive and representative indices in
 decision and objective space. A/B annotations are illustrative reference regions,
 not learned clusters; objective-space highlights map actual archive rows. Full
-archive axes are the default. Evolution has separate component/region, pointwise,
-and offspring-repair panels. Missing warmup rows are not filled with invented
+archive axes are the default. Evolution has four separate DBSCAN-component, bounded-cell, pointwise-percentage,
+and offspring-repair panels. Both scatter figures include full overviews and A/B
+detail panels. Small diamonds show at most 32 deterministic representatives for
+display only; the same actual archive indices are used in both spaces and all
+stored representatives remain unchanged. Pass optional `--pareto pareto.csv`
+to overlay the final NSGA-II set. The process file is optional for scatter-only
+plotting; missing history never becomes a fabricated evolution curve. Missing warmup rows are not filled with invented
 zeros. PNG and PDF are produced; vector text/axes accompany rasterized dense
 scatter layers. No official journal-format compliance is claimed.
 
