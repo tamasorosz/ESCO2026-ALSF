@@ -1,0 +1,42 @@
+{
+  "diagnostic_grid_size": 21,
+  "tolerance": [
+    0.1,
+    0.1
+  ],
+  "thresholds": [
+    0.1,
+    0.1
+  ],
+  "floors": [
+    0.001,
+    0.001
+  ],
+  "interpretation": "Finite perturbations establish counterexamples, not guaranteed robustness.",
+  "A": {
+    "center": [
+      2.5,
+      2.5
+    ],
+    "max_relative_variations": [
+      0.07840000000000004,
+      0.7773019704563446
+    ],
+    "violating_perturbation_found": true,
+    "archive_stable_points_tested": 0,
+    "archive_stable_points_with_counterexample": 0
+  },
+  "B": {
+    "center": [
+      1.8,
+      1.87
+    ],
+    "max_relative_variations": [
+      0.10598346420460454,
+      0.062185268180207795
+    ],
+    "violating_perturbation_found": true,
+    "archive_stable_points_tested": 160,
+    "archive_stable_points_with_counterexample": 130
+  }
+}

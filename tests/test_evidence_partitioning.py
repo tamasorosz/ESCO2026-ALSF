@@ -115,3 +115,57 @@ def test_plotting_entrypoints_with_measured_csv_schema(tmp_path,script):
     subprocess.run([sys.executable,script,*args,'--outdir',str(target)],check=True,capture_output=True)
     assert len(list(target.glob('*.png')))==3
     assert len(list(target.glob('*.pdf')))==3
+
+
+def test_display_subset_does_not_modify_pointwise_evidence():
+    from plot_three_figures import display_representatives
+    x=np.linspace(0,1,100)
+    df=pd.DataFrame({'X1':x,'X2':x,'Obj1':x,'Obj2':1-x,
+                     'flag':['robust']*100,'is_stable_representative':[True]*100})
+    before=df.copy(deep=True)
+    indices=display_representatives(df)
+    assert len(indices)==32
+    assert len(set(indices))==32
+    np.testing.assert_array_equal(indices,display_representatives(df))
+    pd.testing.assert_frame_equal(before,df)
+
+
+def test_evolution_separates_geometry_and_uses_measured_fractions(monkeypatch,tmp_path):
+    import matplotlib.pyplot as plt
+    import plot_three_figures as module
+    out,_=classify_dataframe(archive(),[.1,.1],.1,.1,min_samples=2,dbscan_min_samples=2)
+    process=pd.DataFrame({'generation':[3,4],'robust':[1,2],'nonrobust':[0,0],
+        'n_nei_clusters':[0,0],'n_mixed_clusters':[2,2],
+        'n_regions':[100,120],'n_mixed_regions':[3,4],
+        'n_robust':[2,3],'n_non_robust':[2,2],'n_nei':[1,5],
+        'regenerated':[1,2],'attempts':[2,2]})
+    saved={}
+    def capture(fig,outdir,stem):
+        saved[stem]=fig
+    monkeypatch.setattr(module,'save',capture)
+    module.plots(out,process,tmp_path)
+    fig=saved['test_evolution']
+    assert len(fig.axes)==4
+    components,cells,repair,evidence=fig.axes
+    assert all(max(line.get_ydata())<10 for line in components.lines)
+    np.testing.assert_array_equal(cells.lines[0].get_ydata(),[100,120])
+    np.testing.assert_allclose(evidence.lines[0].get_ydata(),[40,30])
+    np.testing.assert_allclose(sum(line.get_ydata() for line in evidence.lines),[100,100])
+    assert evidence.get_ylim()==(0,100)
+    plt.close('all')
+
+
+def test_scatter_only_cli_accepts_pareto_without_inventing_history(monkeypatch,tmp_path):
+    import plot_three_figures as module
+    data,_=classify_dataframe(archive(),[.1,.1],.1,.1)
+    data.to_csv(tmp_path/'archive.csv',index=False)
+    data.iloc[:1].to_csv(tmp_path/'pareto.csv',index=False)
+    captured={}
+    def capture(a,p,out,reference,ab,pareto=None):
+        captured.update(archive=a,process=p,pareto=pareto)
+    monkeypatch.setattr(module,'plots',capture)
+    module.main(['--archive',str(tmp_path/'archive.csv'),
+                 '--pareto',str(tmp_path/'pareto.csv'),'--outdir',str(tmp_path/'plots')])
+    assert captured['process'] is None
+    assert len(captured['archive'])==5
+    assert len(captured['pareto'])==1
