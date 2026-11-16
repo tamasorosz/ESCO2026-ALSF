@@ -1,5 +1,9 @@
 # ALSF-Drop: implementation and measured comparison
 
+The subsequent [twenty-seed study on both problems](../twenty_seed_study/REPORT.md) supersedes
+the initial three-seed comparison for general interpretation. The original
+measurements below are preserved.
+
 **Genuine evaluation savings are achieved, but target-HV efficiency does not
 improve over baseline in these three seed pairs.** At 200 generations Drop saves
 1,002-1,043 real model calls per run, while its final HV/IGD+ are slightly worse

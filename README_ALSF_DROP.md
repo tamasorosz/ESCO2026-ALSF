@@ -1,5 +1,9 @@
 # ALSF-Drop: rejection before evaluation, without replacement
 
+The subsequent [twenty-seed study on both problems](docs/twenty_seed_study/REPORT.md) supersedes
+the initial three-seed comparison for general interpretation. The original
+measurements below are preserved.
+
 This experimental strategy tests evaluation savings on the defined ten-current
 Di Barba-inspired convex solenoid model. It does not claim exact reproduction
 of the published physical problem. The analytical objectives, bounds, convex
