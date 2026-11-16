@@ -60,6 +60,7 @@ class LocalVariationState:
             raise ValueError("radius must be a positive finite number")
         self._old_x = np.empty((0, 0))
         self._old_f = np.empty((0, 2))
+        self.local_counts = np.ones(0, dtype=int)
         self.verified_violation = np.zeros(0, dtype=bool)
         self.max_observed_variation = np.zeros((0, 2), dtype=float)
 
@@ -78,9 +79,11 @@ class LocalVariationState:
                  not np.array_equal(coords[:previous], self._old_x) or
                  not np.array_equal(objectives[:previous], self._old_f)))):
             previous = 0
+            self.local_counts = np.ones(n, dtype=int)
             self.verified_violation = np.zeros(n, dtype=bool)
             self.max_observed_variation = np.zeros((n, 2), dtype=float)
         elif n > previous:
+            self.local_counts = np.pad(self.local_counts, (0,n-previous), constant_values=1)
             self.verified_violation = np.pad(self.verified_violation, (0, n-previous))
             self.max_observed_variation = np.pad(
                 self.max_observed_variation, ((0, n-previous), (0, 0)))
@@ -92,6 +95,8 @@ class LocalVariationState:
         for i in range(previous, n):
             near = tree.query_ball_point(scaled[i], r=self.radius + 1e-12, p=np.inf)
             other = np.asarray([j for j in near if j < i], dtype=int)
+            self.local_counts[i] += len(other)
+            self.local_counts[other] += 1
             if not len(other):
                 continue
             variation = relative_pairwise_variation(objectives[other], objectives[i], self.floors)
@@ -102,9 +107,10 @@ class LocalVariationState:
                 self.verified_violation[i] = True
                 self.verified_violation[other[bad]] = True
 
-        counts = (tree.query_ball_point(scaled, r=self.radius + 1e-12,
-                                        p=np.inf, return_length=True)
-                  if n else np.zeros(0, dtype=int))
+        # Every unordered neighbor pair above increments both endpoints once.
+        # Existing counts persist across append-only updates; no repeated full
+        # archive radius query is needed. Includes each point itself exactly once.
+        counts = self.local_counts.copy()
         self._old_x = coords.copy()
         self._old_f = objectives.copy()
         return counts

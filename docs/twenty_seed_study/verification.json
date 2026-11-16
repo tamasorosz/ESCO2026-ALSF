@@ -1,0 +1,21 @@
+{
+  "n_runs": 120,
+  "n_seeds_per_problem_and_method": 20,
+  "all_completed_generations": 200,
+  "total_actual_model_calls": 2276245,
+  "total_dropped_evaluations": 123755,
+  "all_evaluation_counters_consistent": true,
+  "all_parent_populations_valid": true,
+  "all_pre_activation_trajectories_identical": true,
+  "old_full_solenoid_seed42_trajectories_bitwise_identical": true,
+  "tests_passed": 53,
+  "raw_archives_retained_locally": "work/twenty_seed_study/runs/",
+  "sources_sha256": {
+    "run_repeated_study.py": "9fca3c53ed1b7b2d197c8665586363e0bea5b578e70050bf492744f77fc4d5f7",
+    "src/local_variation.py": "e37538676fb68b3ef100c75f66b189237840a539a7b0c754c6c71e5066925d71",
+    "src/offspring_drop.py": "76093535dc827f77e88e1031b8be853855d9895a418553ae1c0b31f7b2266eb8",
+    "benchmark_test1.py": "d51b224302ccc0a39e26efe04b18275a52e46cc025d01d6122b22d8dae79bbd6",
+    "di_barba_solenoid_benchmark.py": "9c9ae025a297ef9cf721c80c699f3d66448d54ec66d14cbf12fd850b252557f6",
+    "src/study_reference.py": "e914cc0833e61143854e7250fd5ec3016670b376177e501090ff6ddb83019cb5"
+  }
+}
