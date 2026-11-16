@@ -1,0 +1,10 @@
+target_fraction,method_a,method_b,n_both,n_total,mean_difference,ci95_low,ci95_high
+0.99,baseline,resample,20,20,0.0,0.0,0.0
+0.99,baseline,drop,20,20,0.0,0.0,0.0
+0.99,resample,drop,20,20,0.0,0.0,0.0
+0.995,baseline,resample,0,20,,,
+0.995,baseline,drop,0,20,,,
+0.995,resample,drop,0,20,,,
+0.999,baseline,resample,0,20,,,
+0.999,baseline,drop,0,20,,,
+0.999,resample,drop,0,20,,,

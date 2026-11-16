@@ -1,0 +1,72 @@
+{
+  "benchmark": "test1",
+  "mode": "resample",
+  "seed": 71,
+  "generations": 200,
+  "pop_size": 100,
+  "offsprings": 100,
+  "flag_start": 50,
+  "thresholds": [
+    0.1,
+    0.1
+  ],
+  "floors": [
+    0.001,
+    0.001
+  ],
+  "tolerances": [
+    0.1,
+    0.1
+  ],
+  "local_radius": 1.0,
+  "exclusion_radius": 1.0,
+  "min_samples": 10,
+  "sbx_prob": 0.9,
+  "sbx_eta": 5,
+  "pm_prob": 1.0,
+  "pm_eta": 5,
+  "round_decimals": 8,
+  "cache": false,
+  "diagnostic_clustering": "final only; never used by exclusion",
+  "partition": false,
+  "actual_model_calls": 20000,
+  "evaluator_calls": 20000,
+  "unique_archive": 19904,
+  "expected_evaluations": 20000,
+  "saved_evaluations": 0,
+  "proposed": 20000,
+  "dropped": 0,
+  "accepted": 20000,
+  "regenerated": 1681,
+  "run_seconds": 8.68006239799979,
+  "timings": {
+    "objectives": 0.5804945231848251,
+    "classification": 4.265100241995242,
+    "indicators": 0.6907000600022002
+  },
+  "posthoc_seconds": 1.816153583000414,
+  "generation": 200,
+  "evaluations": 20000,
+  "hypervolume": 0.8135128402366875,
+  "igd_plus": 0.0038178409903763403,
+  "mean_reference_distance": 0.0013149605795767935,
+  "sensitive_audit_fraction": 0.24,
+  "sensitivity_kind": "finite_grid",
+  "R1_median": 0.05692588253176684,
+  "R2_median": 0.02370440600279584,
+  "peak_screening_checks": 0,
+  "peak_rejected": 0,
+  "peak_evaluated": 0,
+  "peak_allowed_sparse": 0,
+  "peak_labels": {},
+  "objective_directions": [
+    "min",
+    "max"
+  ],
+  "final_labels": {
+    "robust": 14341,
+    "NEI": 5029,
+    "non-robust": 534
+  },
+  "final_clusters": 39
+}

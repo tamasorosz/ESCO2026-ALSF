@@ -1,0 +1,4 @@
+benchmark,method_a,method_b,n_total,n_both_reached,interpretation
+test1,baseline,resample,20,0,Conditional on both reaching; selection-biased if censored. Descriptive only.
+test1,baseline,drop,20,0,Conditional on both reaching; selection-biased if censored. Descriptive only.
+test1,resample,drop,20,0,Conditional on both reaching; selection-biased if censored. Descriptive only.

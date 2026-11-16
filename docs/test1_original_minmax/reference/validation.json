@@ -1,0 +1,21 @@
+{
+  "peak_branch_start_q": 12.479999998931618,
+  "peak_local_maximum_q": 12.49749984373965,
+  "peak_maximum_f2": 112.50125013282829,
+  "negative_branch_catch_q": 12.500416713258058,
+  "peak_center_f1": 12.5,
+  "peak_center_f2": 112.5,
+  "reference_rows": 13437,
+  "refined_rows": 26870,
+  "hv": 0.8210610296927973,
+  "refined_hv": 0.8210861084668839,
+  "hv_resolution_difference": 2.5078774086639832e-05,
+  "multistart_rows": 532,
+  "multistart_failures": 2,
+  "max_feasible_envelope_violation": 3.2450486742163775e-10,
+  "max_best_multistart_gap": 2.842170943040401e-14,
+  "max_polar_sampling_gap": 2.842170943040401e-14,
+  "polar_angles": 65537,
+  "peak_audit_sensitive_fraction": 1.0,
+  "peak_audit_kind": "21x21 finite perturbation grid; positive witnesses, no stability guarantee"
+}

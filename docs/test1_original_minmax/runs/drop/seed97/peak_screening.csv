@@ -1,0 +1,5 @@
+generation,policy,X1,X2,rejected,archive_neighbors,allowed_sparse
+64,repair_check,2.417615,2.37010423,False,0,True
+64,drop_proposal,2.417615,2.37010423,False,0,True
+98,repair_check,2.50681411,2.58210823,False,0,True
+98,drop_proposal,2.50681411,2.58210823,False,0,True
