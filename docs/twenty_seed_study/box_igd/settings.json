@@ -1,0 +1,79 @@
+{
+  "reference_solutions": 776,
+  "methods": [
+    "baseline",
+    "resample",
+    "drop"
+  ],
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    42,
+    71,
+    97
+  ],
+  "n_paired_seeds": 20,
+  "decision_half_widths": [
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1
+  ],
+  "decision_full_widths": [
+    0.2,
+    0.2,
+    0.2,
+    0.2,
+    0.2,
+    0.2,
+    0.2,
+    0.2,
+    0.2,
+    0.2
+  ],
+  "decision_units": "normalized J/(1 MA/m\u00b2); distances numerically in MA/m\u00b2",
+  "objective_ideal": [
+    3.05322158243951e-14,
+    0.0
+  ],
+  "objective_scales": [
+    0.9999999999999695,
+    1.1549624507083016
+  ],
+  "objective_scale_source": "coordinate ranges of the common stored reference only",
+  "objective_box": "coordinatewise exact extrema on physical decision box intersected with [-2,2]^10; joint bounding approximation",
+  "reference_weighting": "all stored reference rows, equally weighted; no arclength resampling",
+  "coverage_rule": "computed distance == 0; no hidden epsilon",
+  "bootstrap_draws": 20000,
+  "bootstrap_seed": 20261116,
+  "paired_difference": "B minus A",
+  "proposed_equivalence_margins": {
+    "decision_box_igd": 0.01,
+    "objective_box_igd": 0.001,
+    "decision_tolerance_coverage": 0.05,
+    "objective_tolerance_coverage": 0.05
+  },
+  "margin_status": "illustrative proposals fixed before new metric evaluation; not approved engineering specifications",
+  "equivalence_method": "exploratory paired t-TOST alpha=.05, plus Holm adjustment across estimable comparisons; zero variance not estimable"
+}
