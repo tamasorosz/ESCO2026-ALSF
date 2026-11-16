@@ -1,0 +1,6 @@
+mode,kind,flag,n,independently_sensitive_fraction
+baseline,evaluated,non-robust,620,1.0
+drop,evaluated,non-robust,620,1.0
+drop,rejected,unevaluated,620,1.0
+resample,evaluated,non-robust,620,1.0
+resample,rejected,unevaluated,620,1.0

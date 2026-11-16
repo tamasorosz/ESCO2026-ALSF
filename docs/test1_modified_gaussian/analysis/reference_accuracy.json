@@ -1,0 +1,7 @@
+{
+  "quadrature_limit_hv": 0.44299920363751344,
+  "quadrature_error_estimate": 8.286396996750031e-13,
+  "locked_reference_hv": 0.4428844284623622,
+  "reference_hv_discretization_gap": 0.00011477517515123825,
+  "target_policy": "Original discrete-reference targets remain locked; quadrature is a posthoc accuracy diagnostic."
+}

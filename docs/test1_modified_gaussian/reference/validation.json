@@ -1,0 +1,23 @@
+{
+  "endpoint_t": 2.5002499781263476,
+  "endpoint_objectives": [
+    12.502499906241603,
+    87.50124988282204
+  ],
+  "stationary_t": [
+    2.5002499781263476,
+    2.6826131853037105,
+    5.0
+  ],
+  "endpoint_derivative_residual": 5.524469770534779e-13,
+  "random_points": 250000,
+  "max_off_diagonal_improvement": -5.333570918253372e-09,
+  "reference_rows": 4001,
+  "refined_rows": 8001,
+  "reference_hv": 0.4428844284623622,
+  "refined_hv": 0.44294182383880354,
+  "hv_resolution_difference": 5.7395376441338186e-05,
+  "root_accuracy": "bracketed monotone intervals, xtol=5e-15; float64, not interval certification",
+  "domain_proof": "q<=50: strictly increasing in s=x1+x2, s<=sqrt(2q), diagonal feasible. q>50: f2<=100 exp(-(sqrt(q)-sqrt(12.5))^2/.01)<1e-540; endpoint f2>87.5 and f1<50.",
+  "monotonicity_proof": "On 0<=t<=2.5 both derivative terms nonnegative. On [2.5,t*] complete derivative-root enumeration gives no other root. All stationary points and endpoints on [0,5] checked for global maximum. Thus t>t* dominated by t*."
+}
