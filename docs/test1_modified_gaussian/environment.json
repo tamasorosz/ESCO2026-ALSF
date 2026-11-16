@@ -1,0 +1,23 @@
+{
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "packages": {
+    "numpy": "2.3.5",
+    "scipy": "1.17.0",
+    "pandas": "2.2.3",
+    "pymoo": "0.6.2",
+    "matplotlib": "3.10.8",
+    "scikit-learn": "1.8.0"
+  },
+  "base_commit": "e6ebf3ca1aeaa86edaa300ac2cb5f7f18d2943db",
+  "source_sha256": {
+    "benchmark_test1_modified_gaussian.py": "dab993643a7e06452422332817f8649a5f162e1b77f13c2c9f802d9596738d96",
+    "run_test1_modified_gaussian.py": "7838559466ec3cee6b069621638e34969aa9a6e1d38286b27347a8f75bdc0e1b",
+    "src/modified_gaussian_reference.py": "04928316a845e7b6a4491737931a38d21e74773858beea67c88781f127060324",
+    "src/modified_gaussian_observation.py": "c753ee6798f2b4167df117fac88130560a24cd1f5d1bd83b7d00cd10dc806292",
+    "src/local_variation.py": "e37538676fb68b3ef100c75f66b189237840a539a7b0c754c6c71e5066925d71",
+    "src/preprocessing.py": "363021e4f281f159b12e767e0c0b2a35390b97aaab86092e9cdc6960c07fec03",
+    "src/offspring_drop.py": "76093535dc827f77e88e1031b8be853855d9895a418553ae1c0b31f7b2266eb8",
+    "src/offspring_policy.py": "97907c808734c3547d75da9c9db72b81d40967e3f1902c4a62dbfae67bf500e0"
+  }
+}

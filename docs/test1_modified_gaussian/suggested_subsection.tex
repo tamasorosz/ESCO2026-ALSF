@@ -1,0 +1,9 @@
+% Suggested insertion only; the manuscript has not been edited.
+\subsection{Modified Gaussian benchmark: nominal quality and local sensitivity}
+We studied $\min f_1=x_1^2+x_2^2$ and $\max f_2=-[(x_1-5)^2+(x_2-5)^2]+100\exp(-[(x_1-2.5)^2+(x_2-2.5)^2]/0.01)$ on $[-5,10]^2$.
+An independent reduction establishes the nominal Pareto set $(t,t)$, $0\le t\le 2.5002499781$. All indicators use $(f_1,-f_2)$ with fixed reference normalization.
+Twenty paired seeds per method were run for 200 generations with population and nominal offspring sizes of 100, retaining the inherited ALSF operators, thresholds and tolerances.
+Mean final hypervolumes were 0.438620, 0.435319 and 0.435314 for NSGA-II, ALSF-Resample and ALSF-Drop, respectively; corresponding mean IGD+ values were 0.002122, 0.003128 and 0.003131.
+ALSF-Drop used 15243.2 evaluations on average, saving 23.78\% of the nominal 20000-evaluation schedule. There were 958 actual Drop rejections within radius 0.03 of the Gaussian center, aggregated across the 20 runs.
+All final nondominated designs underwent independent uncertainty-box extrema analysis. Their mean per-run sensitive fractions were 0.8805, 0.8285 and 0.8295. These full-box assessments are distinct from archive evidence labels.
+Neighborhood discovery, accurate approximation of the narrow nominal Pareto segment and demonstrated rejection must be interpreted separately. Filtering can remove nominally efficient designs; lower evaluation counts alone do not establish computational advantage. Detailed per-seed results, paired bootstrap intervals, multiplicity-adjusted comparisons, censored HV targets, timing and reference accuracy are reported in the accompanying reproducibility report. No equivalence or universal superiority is inferred.

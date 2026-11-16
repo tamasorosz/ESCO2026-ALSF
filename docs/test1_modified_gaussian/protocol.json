@@ -1,0 +1,98 @@
+{
+  "benchmark": "modified Gaussian min f1, max f2",
+  "width": 0.01,
+  "amplitude": 100,
+  "center": [
+    2.5,
+    2.5
+  ],
+  "bounds": [
+    -5,
+    10
+  ],
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    42,
+    71,
+    97
+  ],
+  "modes": [
+    "baseline",
+    "resample",
+    "drop"
+  ],
+  "generations": 200,
+  "pop_size": 100,
+  "n_offsprings": 100,
+  "flag_start": 50,
+  "sbx_prob": 0.9,
+  "sbx_eta": 5,
+  "pm_prob": 1.0,
+  "pm_eta": 5,
+  "tolerances": [
+    0.1,
+    0.1
+  ],
+  "thresholds": [
+    0.1,
+    0.1
+  ],
+  "floors": [
+    0.001,
+    0.001
+  ],
+  "min_samples": 10,
+  "reference_hv": 0.4428844284623622,
+  "target_fractions": [
+    0.99,
+    0.995,
+    0.999
+  ],
+  "target_hv": [
+    0.43845558417773856,
+    0.4406700063200504,
+    0.44244154403389985
+  ],
+  "radii": [
+    0.03,
+    0.1,
+    0.18
+  ],
+  "narrow_segment_t": [
+    2.4,
+    2.5002499781263476
+  ],
+  "narrow_coverage_normalized_distance": 0.01,
+  "reference_sha256": "ee5c917a31664dab3772a8e747fbe040d0d4b82b002ee0587470e1b4fa6d5a56",
+  "normalization_ideal": [
+    0.0,
+    -87.50124988282204
+  ],
+  "normalization_span": [
+    12.502499906241603,
+    137.50124988282204
+  ],
+  "hv_reference": [
+    1.1,
+    1.1
+  ],
+  "igd_reference": "501 equally spaced normalized objective-arclength points",
+  "target_definition": "Fractions of reference HV; locked before primary runs",
+  "workers": 2
+}

@@ -1,0 +1,16 @@
+{
+  "primary_runs": 60,
+  "completed_generations_each": 200,
+  "tests_passed": 93,
+  "test_command": "python -m pytest -q",
+  "suite_result": "93 passed; one external anyio pytest deprecation warning",
+  "accounting": "All 60 independently checked; see analysis/verification.csv",
+  "source_base": "e6ebf3c",
+  "existing_files_policy": "Only new files added relative to feature/test1-original-minmax",
+  "additional_source_sha256": {
+    "analyze_modified_gaussian.py": "d6f343d58380e81566e38729af4a2351b426df1237c9476ca35f709aaf75af63",
+    "prepare_modified_gaussian.py": "54e5984d7547984fc1d2872bdd76ad510b39d1792cec276d130ad48077143d02",
+    "tests/test_modified_gaussian.py": "17950243a05560e44fedce53d471a9a1dd1266f3c16dca7ddcc3039979edcff7",
+    "README_MODIFIED_GAUSSIAN.md": "ec6f969214b959e2f12ceb6d69410f4ad22c534f18fb9a484536b4da4b834619"
+  }
+}

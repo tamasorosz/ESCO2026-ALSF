@@ -1,0 +1,110 @@
+{
+  "benchmark": "test1",
+  "mode": "resample",
+  "seed": 97,
+  "generations": 200,
+  "pop_size": 100,
+  "offsprings": 100,
+  "flag_start": 50,
+  "thresholds": [
+    0.1,
+    0.1
+  ],
+  "floors": [
+    0.001,
+    0.001
+  ],
+  "tolerances": [
+    0.1,
+    0.1
+  ],
+  "local_radius": 1.0,
+  "exclusion_radius": 1.0,
+  "min_samples": 10,
+  "sbx_prob": 0.9,
+  "sbx_eta": 5,
+  "pm_prob": 1.0,
+  "pm_eta": 5,
+  "round_decimals": 8,
+  "cache": false,
+  "diagnostic_clustering": "final only; never used by exclusion",
+  "partition": false,
+  "actual_model_calls": 20000,
+  "evaluator_calls": 20000,
+  "unique_archive": 19906,
+  "expected_evaluations": 20000,
+  "saved_evaluations": 0,
+  "proposed": 20000,
+  "dropped": 0,
+  "accepted": 20000,
+  "regenerated": 5641,
+  "run_seconds": 5.009125418999986,
+  "timings": {
+    "objectives": 0.3152368050033374,
+    "classification": 2.8048960279994617,
+    "indicators": 0.3002014540005007
+  },
+  "posthoc_seconds": 0.8146909689999688,
+  "generation": 200,
+  "evaluations": 20000,
+  "hypervolume": 0.43684209072869534,
+  "igd_plus": 0.002826722393831708,
+  "mean_reference_distance": 0.0010675453580865956,
+  "sensitive_audit_fraction": 0.83,
+  "sensitivity_kind": "complete_stationarity_enumeration_float64",
+  "R1_median": 0.10045461978375805,
+  "R2_median": 0.0641416505800907,
+  "peak_counts": {
+    "0.03": {
+      "evaluated": 1,
+      "final_pareto": 1,
+      "final_population": 1,
+      "checked": 60,
+      "rejected": 58,
+      "accepted": 2,
+      "rejected_outside": 5956,
+      "original_rejected": 58,
+      "replacement_rejected": 0
+    },
+    "0.1": {
+      "evaluated": 55,
+      "final_pareto": 17,
+      "final_population": 17,
+      "checked": 913,
+      "rejected": 816,
+      "accepted": 97,
+      "rejected_outside": 5198,
+      "original_rejected": 816,
+      "replacement_rejected": 0
+    },
+    "0.18": {
+      "evaluated": 106,
+      "final_pareto": 27,
+      "final_population": 27,
+      "checked": 1540,
+      "rejected": 1363,
+      "accepted": 177,
+      "rejected_outside": 4651,
+      "original_rejected": 1359,
+      "replacement_rejected": 4
+    }
+  },
+  "closest_evaluated_endpoint": 0.008923065715997727,
+  "closest_final_endpoint": 0.008923065715997727,
+  "narrow_coverage": 0.5469061876247505,
+  "narrow_mean_distance": 0.011667989197973065,
+  "peak_rejected": 1363,
+  "peak_labels": {
+    "non-robust": 106
+  },
+  "objective_directions": [
+    "min",
+    "max"
+  ],
+  "final_labels": {
+    "NEI": 10623,
+    "robust": 7883,
+    "non-robust": 1400
+  },
+  "final_clusters": 80
+}
