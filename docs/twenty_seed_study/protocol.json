@@ -1,0 +1,51 @@
+{
+  "root": "work/twenty_seed_study",
+  "workers": 2,
+  "modes": [
+    "baseline",
+    "resample",
+    "drop"
+  ],
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    42,
+    71,
+    97
+  ],
+  "benchmarks": [
+    "test1",
+    "solenoid"
+  ],
+  "generations": 200,
+  "pop_size": 100,
+  "flag_start": 50,
+  "primary_target_fraction": 0.995,
+  "secondary_target_fractions": [
+    0.99,
+    0.999
+  ],
+  "target_hv": {
+    "test1": 1.0376420837903848,
+    "solenoid": 1.1265765048106742
+  },
+  "analysis": "paired by seed, median/IQR, paired bootstrap CI, two-sided Wilcoxon with Holm correction; censored target attainment never imputed",
+  "reference_test1": "analytic fixed-f1 envelope; equations unchanged",
+  "reference_solenoid": "unchanged validated convex front",
+  "timing": "two concurrent workers, single-threaded BLAS; descriptive wall time"
+}

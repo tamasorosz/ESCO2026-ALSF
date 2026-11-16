@@ -1,0 +1,61 @@
+{
+  "benchmark": "original Test1 min f1, max f2",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    42,
+    71,
+    97
+  ],
+  "modes": [
+    "baseline",
+    "resample",
+    "drop"
+  ],
+  "generations": 200,
+  "pop_size": 100,
+  "flag_start": 50,
+  "reference_hv": 0.8210610296927973,
+  "target_fractions": [
+    0.99,
+    0.995,
+    0.999
+  ],
+  "target_hv": [
+    0.8128504193958693,
+    0.8169557245443333,
+    0.8202399686631044
+  ],
+  "peak_radius": 0.18,
+  "reference_sha256": "a5ab150765491d750b2574228fc94377af2b2f783c65d7937be713f69bbec7f8",
+  "normalization_ideal": [
+    0,
+    -200
+  ],
+  "normalization_span": [
+    50,
+    150
+  ],
+  "hv_reference": [
+    1.1,
+    1.1
+  ],
+  "target_definition": "Locked before new optimization runs; fractions of independent corrected reference HV",
+  "manuscript_blob": "09d3c15ffeaa36acd4696b4d4f747f2d6d39e04e",
+  "workers": 2
+}

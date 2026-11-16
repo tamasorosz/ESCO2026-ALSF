@@ -1,0 +1,15 @@
+{
+  "python": "3.12.14",
+  "packages": {
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.9.1",
+    "pymoo": "0.6.2",
+    "matplotlib": "3.11.2",
+    "pytest": "9.2.0"
+  },
+  "openblas_num_threads": 1,
+  "base_commit": "c1506ca0cce688c508d6e149a6032cc2d159970c",
+  "integration_base_commit": "7b303ad"
+}

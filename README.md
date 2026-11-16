@@ -84,3 +84,18 @@ It preserves the two-variable benchmark and ALSF evidence/exclusion rules.
 
 Measured results, reference CSVs, solver diagnostics, audits and all five PNG/PDF
 figures are in the [three-seed solenoid study](docs/solenoid_study/REPORT.md).
+
+## Experimental ALSF-Drop
+
+[ALSF-Drop](README_ALSF_DROP.md) rejects forbidden offspring **before objective
+evaluation, without replacement**, using a separate NSGA-II infill component.
+It preserves the baseline/Resample executables and the benchmark objectives.
+See the measured [Drop comparison](docs/alsf_drop/REPORT.md) for evaluation
+savings, target-HV attainment, exact-sensitivity audits and limitations.
+
+## Twenty-seed paired comparison on both problems
+
+The [repeated-study workflow](README_REPEATED_STUDY.md) runs baseline, Resample
+and Drop with 20 paired seeds on both benchmarks. The [120-run report](docs/twenty_seed_study/REPORT.md)
+contains distributions, paired confidence intervals, corrected tests, target-HV
+attainment and evaluation-saving / quality tradeoffs.

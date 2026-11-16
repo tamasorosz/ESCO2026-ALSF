@@ -1,0 +1,19 @@
+{
+  "runs_verified": 60,
+  "optimizer_model_calls": 1170770,
+  "max_physical_export_error": 8.526512829121202e-14,
+  "first_50_generation_histories_identical_per_seed": true,
+  "parent_commit": "75bbe97dc31069cef47b63a5147612fb617acfd4",
+  "parent_tree": "1c85efd135a3841be3e99a34d723434f97d5037f",
+  "existing_tracked_files_changed": [],
+  "historical_results_preserved": true,
+  "solenoid_rerun": false,
+  "tests": "80 passed; see validation_tests.txt",
+  "source_sha256": {
+    "benchmark_test1_minmax.py": "1f25b9e06a9bd0715841de886e0c741d181ea299c303503184a587c0fddcadaa",
+    "run_test1_original_minmax.py": "fece2f22030e68f310b931f96bf6d5cd187ac090d9e8569f78b01fafddf766c8",
+    "prepare_test1_minmax.py": "d29096f1e7fe5c09194bb282e354a047feef23f67afed918aeaac919b6a2ef08",
+    "src/test1_minmax_reference.py": "0352ac14e08ac713987c19869e4c006d01921bef2286ff5284b78a38577c98be",
+    "src/test1_minmax_observation.py": "91762218a2926a3073d46b0a66170eae4e1cbfb2fd95d3dc60e7096c41ad42ba"
+  }
+}

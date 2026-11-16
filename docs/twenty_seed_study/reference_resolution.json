@@ -1,0 +1,9 @@
+{
+  "reference_n": 2001,
+  "diagnostic_fine_n": 4001,
+  "fine_to_coarse_max_normalized_distance": 0.00010471754975542526,
+  "maximum_final_igd_change": 1.8182698418535079e-06,
+  "locked_reference_hv": 1.0428563656184773,
+  "diagnostic_fine_reference_hv": 1.0429843550266782,
+  "target_hv_remains_locked": true
+}

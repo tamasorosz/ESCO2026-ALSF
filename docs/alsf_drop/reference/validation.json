@@ -1,0 +1,18 @@
+{
+  "coarse_points": 389,
+  "fine_points": 776,
+  "hessian_min_eigenvalues": [
+    -1.9008835417102078e-17,
+    0.2
+  ],
+  "gradient_max_absolute_error": 2.0100787700982892e-10,
+  "max_kkt_residual": 7.09432512735475e-13,
+  "max_bound_violation": 0.0,
+  "all_solvers_successful": true,
+  "coarse_to_fine_max_distance": 3.925231146709438e-17,
+  "fine_to_coarse_max_distance": 4.271107251265431e-05,
+  "reference_hv_coarse": 1.131721120500299,
+  "reference_hv_fine": 1.1322376932770595,
+  "seconds": 4.839694266000151,
+  "validated": true
+}
