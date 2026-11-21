@@ -1,0 +1,16 @@
+\subsection{Restored analytical Test 1 with mixed objective directions}
+The original directions were restored by minimizing $(f_1,-f_2)$ internally,
+while retaining physical objectives for reporting and sensitivity analysis.
+An independent fixed-$f_1$ upper envelope was validated by multistart constrained
+optimization and polar sampling. The Gaussian contributes an exceptionally
+narrow Pareto-efficient segment; its center itself is dominated. Twenty paired
+seeds were evaluated for NSGA-II, ALSF-Resample and ALSF-Drop, without changing
+the sensitivity thresholds or genetic operators.
+ALSF-Drop reduced actual objective calls by 7.31\% on average. Final mean hypervolumes (baseline, Resample, Drop) were 0.813886, 0.813733, 0.813744. The corresponding IGD$^+$ values were 0.003620, 0.003704, 0.003695.
+No final front contained a design within radius 0.18 of the Gaussian center; Drop rejected no candidate in this neighborhood. The 99\% HV target was attained before filtering activated, providing no evidence of accelerated target attainment. These global indicators must be interpreted together with paired confidence
+intervals, censored target attainment, and the peak-specific archive and rejection
+audits. A nonsignificant test does not establish equivalence. The earlier 25.3\%
+saving concerns a separate both-minimization formulation and is not a result of
+this restored experiment. See the supplementary report for all sixty runs and
+the distinction between nominal efficiency, observed sensitivity and actual
+pre-evaluation rejection.

@@ -1,0 +1,13 @@
+{
+  "tests_passed": 49,
+  "all_historical_files_unchanged": true,
+  "all_drop_counters_consistent": true,
+  "pre_activation_trajectories_identical": true,
+  "no_cache_hits": true,
+  "no_mating_shortfalls": true,
+  "actual_drop_model_calls": 56933,
+  "total_actual_drop_savings": 3067,
+  "unchanged_reference_sha256": "3964ccf2a32e9bf30432787bbbe296828dd02416f7c425b7a08e46f7cb54ac4b",
+  "tests_before_base_update": 42,
+  "integration_base_commit": "7b303ad"
+}

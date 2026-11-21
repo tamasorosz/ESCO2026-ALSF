@@ -1,0 +1,29 @@
+{
+  "total_proposed": 20000,
+  "total_dropped": 1022,
+  "total_accepted": 18978,
+  "actual_model_calls": 18978,
+  "evaluator_evaluations": 18978,
+  "baseline_expected_evaluations": 20000,
+  "saved_evaluations": 1022,
+  "total_missing_evaluations": 1022,
+  "non_alsf_shortfall": 0,
+  "cache_hits": 0,
+  "archive_repeat_evaluations": 0,
+  "duplicate_candidates_removed": 767,
+  "drop_fraction": 0.0511,
+  "final_pareto_size": 100,
+  "unique_archive": 18978,
+  "completed_generations": 200,
+  "mating_batches": 199,
+  "run_seconds": 178.28418136500113,
+  "archive_processing_seconds": 175.87022833895026,
+  "indicator_seconds": 0.3206123539894179,
+  "objective_seconds": 0.2758174284317647,
+  "posthoc_classification_seconds": 4.67000063508749e-07,
+  "final_classifications": {
+    "NEI": 17896,
+    "non-robust": 1072,
+    "robust": 10
+  }
+}

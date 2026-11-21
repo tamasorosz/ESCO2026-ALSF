@@ -1,0 +1,41 @@
+{
+  "generations": 60,
+  "pop_size": 40,
+  "offsprings": 40,
+  "flag_start": 10,
+  "seed": 42,
+  "tolerances": [
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1
+  ],
+  "local_radius": 1.0,
+  "exclusion_radius": 1.0,
+  "local_min_samples": 10,
+  "objective_thresholds": [
+    0.1,
+    0.1
+  ],
+  "objective_floors": [
+    0.001,
+    0.001
+  ],
+  "sbx_prob": 0.9,
+  "sbx_eta": 5,
+  "pm_prob": 1.0,
+  "pm_eta": 5,
+  "dbscan_eps": 1.0,
+  "dbscan_min_samples": 10,
+  "partition_enabled": false,
+  "cache_enabled": false,
+  "copy_algorithm": false,
+  "filtering_timing": "classify after flag_start generation; first affected batch is flag_start+1",
+  "initialization": "unfiltered, included in cumulative proposal/evaluation counts"
+}

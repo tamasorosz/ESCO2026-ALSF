@@ -1,0 +1,7 @@
+benchmark,method_a,method_b,n_total,n_both_reached,interpretation,mean_difference,median_difference
+test1,baseline,resample,20,20,Conditional on both reaching; selection-biased if censored. Descriptive only.,0.0,0.0
+test1,baseline,drop,20,20,Conditional on both reaching; selection-biased if censored. Descriptive only.,0.0,0.0
+test1,resample,drop,20,20,Conditional on both reaching; selection-biased if censored. Descriptive only.,0.0,0.0
+solenoid,baseline,resample,20,10,Conditional on both reaching; selection-biased if censored. Descriptive only.,2030.0,2450.0
+solenoid,baseline,drop,20,13,Conditional on both reaching; selection-biased if censored. Descriptive only.,2480.153846153846,2421.0
+solenoid,resample,drop,20,8,Conditional on both reaching; selection-biased if censored. Descriptive only.,-819.875,-826.0
